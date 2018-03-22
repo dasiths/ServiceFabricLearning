@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ActorClient", "ActorClient\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestStatefulService", "TestStatefulService\TestStatefulService.csproj", "{FC361018-63E9-40DB-ABFB-986858EC0EFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestStatelessWebApi", "TestStatelessWebApi\TestStatelessWebApi.csproj", "{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,14 @@ Global
 		{FC361018-63E9-40DB-ABFB-986858EC0EFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FC361018-63E9-40DB-ABFB-986858EC0EFE}.Release|x64.ActiveCfg = Release|Any CPU
 		{FC361018-63E9-40DB-ABFB-986858EC0EFE}.Release|x64.Build.0 = Release|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Debug|x64.Build.0 = Debug|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Release|x64.ActiveCfg = Release|Any CPU
+		{D5BF5A92-FF6F-40E8-804B-E4A33A19BCF4}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
