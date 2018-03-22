@@ -6,14 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ServiceFabric.Data.Collections;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
+using Microsoft.ServiceFabric.Services.Remoting.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
+using TestStatefulService.Interfaces;
 
 namespace TestStatefulService
 {
     /// <summary>
     /// An instance of this class is created for each service replica by the Service Fabric runtime.
     /// </summary>
-    internal sealed class TestStatefulService : StatefulService
+    internal sealed class TestStatefulService : StatefulService, ITestStatefulService
     {
         public TestStatefulService(StatefulServiceContext context)
             : base(context)
@@ -28,7 +30,7 @@ namespace TestStatefulService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
-            return new ServiceReplicaListener[0];
+            return this.CreateServiceRemotingReplicaListeners();
         }
 
         /// <summary>
@@ -43,25 +45,37 @@ namespace TestStatefulService
 
             var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
 
-            while (true)
+            //while (true)
+            //{
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var tx = this.StateManager.CreateTransaction())
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                var result = await myDictionary.TryGetValueAsync(tx, "Counter");
 
-                using (var tx = this.StateManager.CreateTransaction())
-                {
-                    var result = await myDictionary.TryGetValueAsync(tx, "Counter");
+                ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
+                    result.HasValue ? result.Value.ToString() : "Value does not exist.");
 
-                    ServiceEventSource.Current.ServiceMessage(this.Context, "Current Counter Value: {0}",
-                        result.HasValue ? result.Value.ToString() : "Value does not exist.");
+                await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
+                await myDictionary.AddOrUpdateAsync(tx, "Value", DateTime.Now.Second, (key, value) => DateTime.Now.Second);
 
-                    await myDictionary.AddOrUpdateAsync(tx, "Counter", 0, (key, value) => ++value);
+                // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are 
+                // discarded, and nothing is saved to the secondary replicas.
+                await tx.CommitAsync();
+            }
 
-                    // If an exception is thrown before calling CommitAsync, the transaction aborts, all changes are 
-                    // discarded, and nothing is saved to the secondary replicas.
-                    await tx.CommitAsync();
-                }
+            //await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+            //}
+        }
 
-                await Task.Delay(TimeSpan.FromSeconds(1), cancellationToken);
+        public async Task<string> GetResultAsync()
+        {
+            var myDictionary = await this.StateManager.GetOrAddAsync<IReliableDictionary<string, long>>("myDictionary");
+
+            using (var tx = this.StateManager.CreateTransaction())
+            {
+                var result = await myDictionary.TryGetValueAsync(tx, "Value");
+                return result.HasValue ? result.Value.ToString() : string.Empty;
             }
         }
     }
