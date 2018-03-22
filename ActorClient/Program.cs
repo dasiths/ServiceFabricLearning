@@ -21,6 +21,9 @@ namespace ActorClient
             Console.Write(retval.Result);
             Console.ReadLine();
 
+            // Had to specific partion here
+            // See https://stackoverflow.com/questions/36157778/accessing-stateless-service-via-serviceproxy-fails-asp-net-5-web-api-project-t
+
             ITestStatefulService service = ServiceProxy.Create<ITestStatefulService>(new Uri("fabric:/ServiceFabricTest/TestStatefulService"), new ServicePartitionKey(1));
 
             var message = service.GetResultAsync();

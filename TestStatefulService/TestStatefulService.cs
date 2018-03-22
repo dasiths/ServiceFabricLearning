@@ -30,6 +30,8 @@ namespace TestStatefulService
         /// <returns>A collection of listeners.</returns>
         protected override IEnumerable<ServiceReplicaListener> CreateServiceReplicaListeners()
         {
+            // See V2 Endpoint documentation https://docs.microsoft.com/en-us/azure/service-fabric/service-fabric-reliable-services-communication-remoting
+            // For Stateful services https://stackoverflow.com/questions/46743800/service-fabric-stateful-service-remoting-v2
             return this.CreateServiceRemotingReplicaListeners();
         }
 
